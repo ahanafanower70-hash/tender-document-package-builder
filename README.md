@@ -2,6 +2,12 @@
 
 ![Brand Banner](logo.jpg)
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-2dd4bf?style=for-the-badge&logo=github)](https://ahanafanower70-hash.github.io/tender-document-package-builder/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+**🌐 Live Web Application:** [https://ahanafanower70-hash.github.io/tender-document-package-builder/](https://ahanafanower70-hash.github.io/tender-document-package-builder/)
+
+
 > **AI Document Automation Platform • Executive SaaS Dashboard • 100% Client-Side**  
 > An enterprise-grade, browser-based tender document package compiler designed with an executive SaaS dark theme, live interactive SVG diagrams, real-time requirement validation, expiry checking, duplicate detection, and automated single-file PDF package compilation with branded cover pages and uniform page stamps.
 
