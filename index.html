@@ -16,13 +16,19 @@
 
   <div class="dashboard-layout">
     
+    <!-- Backdrop overlay for mobile drawer -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
+
     <!-- LEFT SIDEBAR (Matching Reference Screenshot) -->
-    <aside class="dashboard-sidebar">
-      <!-- Mac-Style Window Control Dots -->
-      <div class="mac-dots">
-        <span class="mac-dot dot-red"></span>
-        <span class="mac-dot dot-yellow"></span>
-        <span class="mac-dot dot-green"></span>
+    <aside class="dashboard-sidebar" id="dashboard-sidebar">
+      <!-- Mac-Style Window Control Dots & Mobile Close Button -->
+      <div class="sidebar-top-bar">
+        <div class="mac-dots">
+          <span class="mac-dot dot-red"></span>
+          <span class="mac-dot dot-yellow"></span>
+          <span class="mac-dot dot-green"></span>
+        </div>
+        <button type="button" class="sidebar-close-btn" id="sidebar-close-btn" onclick="closeMobileSidebar()" aria-label="Close Sidebar">✕</button>
       </div>
 
       <!-- Brand Logo & Header -->
@@ -113,13 +119,24 @@
 
       <!-- TOP NAVBAR (Matching Reference Header Bar) -->
       <header class="top-navbar">
-        <!-- Live Search Box with Icon -->
-        <div class="nav-search-box">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="live-search-input" class="nav-search-input" placeholder="Search requirements, files, or tender ID..." oninput="filterDashboardContent(this.value)" data-i18n-placeholder="search_placeholder">
+        <div class="nav-left-cluster">
+          <button type="button" class="mobile-menu-trigger" id="mobile-menu-trigger" onclick="toggleMobileSidebar()" aria-label="Open Navigation Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <span class="mobile-brand-title">Tender Package</span>
+
+          <!-- Live Search Box with Icon -->
+          <div class="nav-search-box">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="live-search-input" class="nav-search-input" placeholder="Search requirements, files, or tender ID..." oninput="filterDashboardContent(this.value)" data-i18n-placeholder="search_placeholder">
+          </div>
         </div>
 
         <!-- Quick Header Actions -->

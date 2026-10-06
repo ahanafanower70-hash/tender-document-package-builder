@@ -343,6 +343,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (params.get('demo') === 'true') {
     setTimeout(() => generateSampleTestFiles(), 350);
   }
+
+  // Open mobile drawer if requested (?drawer=open)
+  if (params.get('drawer') === 'open') {
+    setTimeout(() => openMobileSidebar(), 200);
+  }
 });
 
 // Setup Main PDF Dropzone
@@ -407,19 +412,58 @@ function setupJSONPanelDropzone() {
   }, false);
 }
 
+// Mobile Drawer & Off-Canvas System
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('dashboard-sidebar');
+  if (!sidebar) return;
+  if (sidebar.classList.contains('mobile-open')) {
+    closeMobileSidebar();
+  } else {
+    openMobileSidebar();
+  }
+}
+
+function openMobileSidebar() {
+  const sidebar = document.getElementById('dashboard-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.add('mobile-open');
+  if (backdrop) backdrop.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileSidebar() {
+  const sidebar = document.getElementById('dashboard-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar) sidebar.classList.remove('mobile-open');
+  if (backdrop) backdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 // Navigation & Smooth Scroll
 function switchNavTab(tab) {
   document.querySelectorAll('.sidebar-nav-item').forEach(btn => btn.classList.remove('active'));
   const activeBtn = document.getElementById(`nav-btn-${tab}`);
   if (activeBtn) activeBtn.classList.add('active');
+  const main = document.querySelector('.dashboard-main');
+  if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  closeMobileSidebar();
 }
 
 function scrollToSection(sectionId) {
   const el = document.getElementById(sectionId);
   if (el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.sidebar-nav-item').forEach(btn => btn.classList.remove('active'));
+    if (sectionId === 'requirements-section') {
+      const reqBtn = document.getElementById('nav-btn-requirements');
+      if (reqBtn) reqBtn.classList.add('active');
+    } else if (sectionId === 'repository-section') {
+      const repoBtn = document.getElementById('nav-btn-repository');
+      if (repoBtn) repoBtn.classList.add('active');
+    }
   }
+  closeMobileSidebar();
 }
 
 // Search Filter Input
@@ -1423,6 +1467,7 @@ function renderDynamicWaveChart(totalPages, filesCount, okCount) {
 // 13. Package Generation & Stamping Engine
 // ==========================================
 async function startPackageGeneration() {
+  closeMobileSidebar();
   const modal = document.getElementById('modal-compile-progress');
   modal.classList.add('active');
 

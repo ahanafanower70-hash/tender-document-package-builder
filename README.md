@@ -27,6 +27,13 @@
 ![Bangla Interface](screenshot_bilingual_bangla.png)
 *Full Bengali localization (`বাংলা`) across the sidebar, live diagrams, KPI widgets, search placeholder, and dynamic requirement descriptions rendered with Hind Siliguri typography.*
 
+### 4. Fully Responsive Mobile & Tablet Experience (Touch-First UI)
+| Mobile Executive Dashboard | Off-Canvas Navigation Drawer |
+|:---:|:---:|
+| ![Mobile Dashboard](screenshot_mobile.png) | ![Mobile Drawer](screenshot_mobile_drawer.png) |
+
+*Tailored for modern mobile devices (iPhone, iPad, Android) with smooth off-canvas navigation drawer, 44px touch targets, iOS Safari zoom prevention (`font-size: 16px`), responsive KPI grids, and full-width dynamic SVG diagrams.*
+
 ---
 
 ## 📊 Live Interactive Diagrams ("Dydgrams")
