@@ -1,0 +1,69 @@
+{
+  "tender_id": "TEN-2026-BD-8941",
+  "title": "Supply and Installation of Smart Office IT Equipment",
+  "procuring_entity": "Department of Public Works, Government of Bangladesh",
+  "bidder_name": "Apex Global Solutions Ltd.",
+  "submission_deadline": "2026-10-15",
+  "requirements": [
+    {
+      "id": "req-1",
+      "order": 1,
+      "title_en": "Trade License / Business Registration",
+      "title_bn": "ট্রেড লাইসেন্স / ব্যবসা নিবন্ধন সনদ",
+      "description_en": "Valid and up-to-date Trade License issued by relevant City Corporation / Municipality.",
+      "description_bn": "সংশ্লিষ্ট সিটি কর্পোরেশন / পৌরসভা কর্তৃক প্রদত্ত হালনাগাদ ট্রেড লাইসেন্স।",
+      "required": true,
+      "has_expiry": true
+    },
+    {
+      "id": "req-2",
+      "order": 2,
+      "title_en": "TIN Certificate & Tax Return Acknowledgment",
+      "title_bn": "টিআইএন সনদ ও আয়কর রিটার্ন দাখিলের প্রমাণক",
+      "description_en": "Taxpayer's Identification Number certificate and latest assessment year submission slip.",
+      "description_bn": "করদাতা শনাক্তকরণ নম্বর (টিআইএন) এবং সর্বশেষ কর বর্ষের রিটার্ন দাখিলের প্রমাণক।",
+      "required": true,
+      "has_expiry": false
+    },
+    {
+      "id": "req-3",
+      "order": 3,
+      "title_en": "VAT Registration Certificate (13-digit BIN)",
+      "title_bn": "মূসক নিবন্ধন সনদ (১৩ ডিজিটের বিআইএন)",
+      "description_en": "Central VAT Registration Certificate issued by National Board of Revenue.",
+      "description_bn": "জাতীয় রাজস্ব বোর্ড (এনবিআর) কর্তৃক প্রদত্ত ১৩ ডিজিটের মূসক নিবন্ধন সনদ।",
+      "required": true,
+      "has_expiry": false
+    },
+    {
+      "id": "req-4",
+      "order": 4,
+      "title_en": "Bank Solvency Certificate & Credit Commitment",
+      "title_bn": "ব্যাংক সচ্ছলতা সনদ ও ক্রেডিট কমিটমেন্ট",
+      "description_en": "Official bank solvency certificate issued within the last 30 days.",
+      "description_bn": "তফসিলি ব্যাংক কর্তৃক বিগত ৩০ দিনের মধ্যে ইস্যুকৃত ব্যাংক সচ্ছলতার সনদপত্র।",
+      "required": true,
+      "has_expiry": true
+    },
+    {
+      "id": "req-5",
+      "order": 5,
+      "title_en": "Past Experience & Satisfactory Completion Certificate",
+      "title_bn": "পূর্ব কাজের অভিজ্ঞতা ও সন্তোষজনক সমাপ্তি সনদপত্র",
+      "description_en": "End-user completion certificates demonstrating similar project executions.",
+      "description_bn": "অনুরূপ কাজ সম্পন্নের সন্তোষজনক সমাপ্তি ও ব্যবহারকারী প্রত্যয়নপত্র।",
+      "required": false,
+      "has_expiry": false
+    },
+    {
+      "id": "req-6",
+      "order": 6,
+      "title_en": "Manufacturer's Authorization Form (MAF)",
+      "title_bn": "প্রস্তুতকারকের অনুমোদন পত্র (এমএএফ)",
+      "description_en": "Official manufacturer authorization letter confirming warranty and spare support.",
+      "description_bn": "প্রস্তাবিত যন্ত্রপাতির জন্য ওয়ারেন্টি সমর্থনের প্রত্যয়নসহ প্রস্তুতকারকের অনুমোদনপত্র।",
+      "required": false,
+      "has_expiry": true
+    }
+  ]
+}

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tender Document Package Builder | AI Document Automation Platform</title>
+  <meta name="description" content="Client-side tender document package compiler, requirement validator, expiry checker, and duplicate detector.">
+  <link rel="icon" type="image/jpeg" href="logo-shield.jpg">
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- PDF-Lib and PDF.js Local Scripts (Offline & Client-Side) -->
+  <script src="pdf-lib.min.js"></script>
+  <script src="pdf.min.js"></script>
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- LEFT SIDEBAR (Matching Reference Screenshot) -->
+    <aside class="dashboard-sidebar">
+      <!-- Mac-Style Window Control Dots -->
+      <div class="mac-dots">
+        <span class="mac-dot dot-red"></span>
+        <span class="mac-dot dot-yellow"></span>
+        <span class="mac-dot dot-green"></span>
+      </div>
+
+      <!-- Brand Logo & Header -->
+      <a href="#" class="sidebar-brand">
+        <img src="logo-shield.jpg" alt="Shield Logo" class="sidebar-logo-img">
+        <div class="brand-text-block">
+          <h2>Tender Package</h2>
+          <p data-i18n="badge_client_only">AI Automation</p>
+        </div>
+      </a>
+
+      <!-- Navigation Menu -->
+      <div class="sidebar-nav-group">
+        <span class="sidebar-section-title" data-i18n="nav_menu_title">Navigation</span>
+        
+        <button type="button" class="sidebar-nav-item active" id="nav-btn-dashboard" onclick="switchNavTab('dashboard')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span data-i18n="nav_dashboard">Dashboard</span>
+        </button>
+
+        <button type="button" class="sidebar-nav-item" id="nav-btn-requirements" onclick="scrollToSection('requirements-section')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span data-i18n="nav_requirements">Requirements</span>
+        </button>
+
+        <button type="button" class="sidebar-nav-item" id="nav-btn-repository" onclick="scrollToSection('repository-section')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span data-i18n="nav_repository">File Repository</span>
+        </button>
+
+        <button type="button" class="sidebar-nav-item" id="nav-btn-compiler" onclick="startPackageGeneration()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span data-i18n="nav_compiler">Compiler</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Footer: Controls -->
+      <div class="sidebar-footer">
+        <span class="sidebar-section-title" data-i18n="nav_preferences">Preferences</span>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 0.5rem;">
+          <!-- Language Capsule Toggle -->
+          <div class="lang-toggle-capsule" role="group" aria-label="Language selection">
+            <button type="button" class="lang-btn active" id="lang-en-btn" onclick="setLanguage('en')">EN</button>
+            <button type="button" class="lang-btn" id="lang-bn-btn" onclick="setLanguage('bn')">বাংলা</button>
+          </div>
+
+          <!-- Theme Capsule Toggle -->
+          <button type="button" class="theme-capsule-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <svg id="theme-moon-icon" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg id="theme-sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="dashboard-main">
+
+      <!-- TOP NAVBAR (Matching Reference Header Bar) -->
+      <header class="top-navbar">
+        <!-- Live Search Box with Icon -->
+        <div class="nav-search-box">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="live-search-input" class="nav-search-input" placeholder="Search requirements, files, or tender ID..." oninput="filterDashboardContent(this.value)" data-i18n-placeholder="search_placeholder">
+        </div>
+
+        <!-- Quick Header Actions -->
+        <div class="top-nav-actions">
+          <!-- Fast Direct JSON Loader Input -->
+          <input type="file" id="direct-json-input" accept=".json,application/json" style="display:none;" onchange="handleDirectJSONFile(this.files)">
+          <button type="button" class="btn btn-card" onclick="document.getElementById('direct-json-input').click()" title="Upload tender requirements JSON">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span data-i18n="btn_upload_json">Upload JSON</span>
+          </button>
+
+          <button type="button" class="btn btn-card" onclick="generateSampleTestFiles()" title="Quick load 5 demo files">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="13 2 13 9 20 9"></polyline>
+              <path d="M13 2v7h7"></path>
+              <path d="M15 15l-3 3-3-3"></path>
+              <path d="M12 18v-6"></path>
+            </svg>
+            <span data-i18n="btn_demo_files">Demo Files</span>
+          </button>
+
+          <!-- Bidder Profile Avatar Pill (Matching Reference) -->
+          <div class="user-avatar-pill">
+            <div class="avatar-badge">AP</div>
+            <div class="avatar-info">
+              <span class="avatar-name" id="pill-bidder-name">Apex Global</span>
+              <span class="avatar-role" id="pill-tender-code">TEN-8941</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- DASHBOARD INNER CONTENT -->
+      <div class="dashboard-content">
+
+        <!-- Real-Time Compliance Action Strip -->
+        <section class="compliance-banner-strip">
+          <div class="strip-title-area">
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-teal);">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span data-i18n="compliance_overview_title">Compliance Status</span>
+            </h3>
+            <p id="compliance-status-subtext" data-i18n="compliance_overview_desc">Real-time validation against tender requirements</p>
+          </div>
+
+          <div class="strip-actions">
+            <button type="button" class="btn btn-card" onclick="openRequirementsModal()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span data-i18n="btn_edit_json">Edit JSON</span>
+            </button>
+
+            <button type="button" class="btn btn-teal btn-pulse" id="btn-generate-package" onclick="startPackageGeneration()" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+              <span data-i18n="btn_generate_package">Generate Package</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Blocking Warnings Alert Banner (when blocked) -->
+        <div id="blocking-alert-container" class="blocking-alert-strip" style="display: none;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div>
+            <h4 data-i18n="blocking_banner_title">Package Generation Blocked</h4>
+            <ul id="blocking-issues-list">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- ==========================================================================
+             KPI WIDGETS ROW (Matching "Today's Sales" 4 Metric Cards in Reference)
+             ========================================================================== -->
+        <section class="kpi-cards-grid">
+          <!-- Card 1: Overall Compliance Score -->
+          <div class="kpi-widget-card">
+            <div class="kpi-top-row">
+              <div class="kpi-icon-box icon-teal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <span class="kpi-trend-pill trend-up" id="kpi-compliance-pill">0% Pass</span>
+            </div>
+            <div class="kpi-metric-val" id="kpi-compliance-val">0%</div>
+            <div class="kpi-metric-label" data-i18n="kpi_compliance_rate">Compliance Score</div>
+          </div>
+
+          <!-- Card 2: Total Requirements -->
+          <div class="kpi-widget-card">
+            <div class="kpi-top-row">
+              <div class="kpi-icon-box icon-cyan">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </div>
+              <span class="kpi-trend-pill trend-up" id="kpi-mandatory-count">4 Req</span>
+            </div>
+            <div class="kpi-metric-val" id="kpi-total-reqs-val">6</div>
+            <div class="kpi-metric-label" data-i18n="kpi_total_requirements">Total Requirements</div>
+          </div>
+
+          <!-- Card 3: Uploaded PDF Documents & Pages -->
+          <div class="kpi-widget-card">
+            <div class="kpi-top-row">
+              <div class="kpi-icon-box icon-purple">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <span class="kpi-trend-pill trend-up" id="kpi-total-pages-pill">0 Pages</span>
+            </div>
+            <div class="kpi-metric-val" id="kpi-files-uploaded-val">0</div>
+            <div class="kpi-metric-label" data-i18n="kpi_files_uploaded">Uploaded PDF Files</div>
+          </div>
+
+          <!-- Card 4: Blocking Issues Counter -->
+          <div class="kpi-widget-card">
+            <div class="kpi-top-row">
+              <div class="kpi-icon-box icon-amber">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <span class="kpi-trend-pill trend-alert" id="kpi-blocking-pill">0 Block</span>
+            </div>
+            <div class="kpi-metric-val" id="kpi-blocking-issues-val">0</div>
+            <div class="kpi-metric-label" data-i18n="kpi_blocking_issues">Blocking Issues</div>
+          </div>
+        </section>
+
+        <!-- ==========================================================================
+             DYNAMIC DIAGRAMS ROW (Matching Diagrams in Reference Screenshot)
+             - Diagram 1: Real-Time Compliance Arc Gauge (like the 80% gauge)
+             - Diagram 2: Status Level Vertical Bar Chart (like the Level chart)
+             - Diagram 3: Document Activity & Page Wave Chart (like Customer Fulfilment)
+             ========================================================================== -->
+        <section class="kpi-cards-grid">
+          
+          <!-- DYNAMIC DIAGRAM 1: Radial Semi-Circle Arc Gauge (Matching 80% Gauge in Reference) -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title-group">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-teal);">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <h4 data-i18n="diagram_compliance_gauge">Compliance Meter</h4>
+              </div>
+              <span class="status-pill pill-ok" id="gauge-status-tag">Live</span>
+            </div>
+            <div class="dash-card-body" style="align-items: center; justify-content: center;">
+              <div class="radial-gauge-container">
+                <div class="gauge-svg-wrapper">
+                  <svg viewBox="0 0 240 140" width="240" height="140">
+                    <defs>
+                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#f43f5e" />
+                        <stop offset="50%" stop-color="#fb923c" />
+                        <stop offset="100%" stop-color="#2dd4bf" />
+                      </linearGradient>
+                    </defs>
+                    <!-- Background Arc Track -->
+                    <path d="M 20 120 A 100 100 0 0 1 220 120" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="18" stroke-linecap="round" />
+                    <!-- Dynamic Progress Arc -->
+                    <path id="gauge-fill-arc" d="M 20 120 A 100 100 0 0 1 220 120" fill="none" stroke="url(#gaugeGradient)" stroke-width="18" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16" style="transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);" />
+                  </svg>
+                  <div class="gauge-center-text">
+                    <span class="gauge-percent-number" id="gauge-text-val">0%</span>
+                    <span class="gauge-percent-label" id="gauge-sublabel">Compliant</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DYNAMIC DIAGRAM 2: Status Level Vertical Bar Chart (Matching "Level" Chart) -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-title-group">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <h4 data-i18n="diagram_status_levels">Requirement Levels</h4>
+              </div>
+              <span class="status-pill pill-not_provided" id="level-chart-total-tag">6 Total</span>
+            </div>
+            <div class="dash-card-body">
+              <div class="bar-chart-container" id="bar-chart-container">
+                <!-- Bar 1: Compliant OK -->
+                <div class="bar-column-item">
+                  <span class="bar-col-val" id="bar-val-ok">0</span>
+                  <div class="bar-fill-track">
+                    <div class="bar-fill-pill" id="bar-fill-ok" style="height: 0%; background: var(--accent-teal);"></div>
+                  </div>
+                  <span class="bar-col-label" data-i18n="bar_ok">OK</span>
+                </div>
+                <!-- Bar 2: Missing -->
+                <div class="bar-column-item">
+                  <span class="bar-col-val" id="bar-val-missing">0</span>
+                  <div class="bar-fill-track">
+                    <div class="bar-fill-pill" id="bar-fill-missing" style="height: 0%; background: var(--accent-rose);"></div>
+                  </div>
+                  <span class="bar-col-label" data-i18n="bar_missing">Missing</span>
+                </div>
+                <!-- Bar 3: Expiry Needed -->
+                <div class="bar-column-item">
+                  <span class="bar-col-val" id="bar-val-expiry">0</span>
+                  <div class="bar-fill-track">
+                    <div class="bar-fill-pill" id="bar-fill-expiry" style="height: 0%; background: var(--accent-amber);"></div>
+                  </div>
+                  <span class="bar-col-label" data-i18n="bar_expiry">Exp Needed</span>
+                </div>
+                <!-- Bar 4: Expired -->
+                <div class="bar-column-item">
+                  <span class="bar-col-val" id="bar-val-expired">0</span>
+                  <div class="bar-fill-track">
+                    <div class="bar-fill-pill" id="bar-fill-expired" style="height: 0%; background: #e11d48;"></div>
+                  </div>
+                  <span class="bar-col-label" data-i18n="bar_expired">Expired</span>
+                </div>
+                <!-- Bar 5: Optional Skipped -->
+                <div class="bar-column-item">
+                  <span class="bar-col-val" id="bar-val-optional">0</span>
+                  <div class="bar-fill-track">
+                    <div class="bar-fill-pill" id="bar-fill-optional" style="height: 0%; background: var(--accent-purple);"></div>
+                  </div>
+                  <span class="bar-col-label" data-i18n="bar_optional">Optional</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DYNAMIC DIAGRAM 3: Page Volume & Document Wave Area Chart (Matching "Customer Fulfilment") -->
+          <div class="dash-card" style="grid-column: span 2;">
+            <div class="dash-card-header">
+              <div class="dash-card-title-group">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-purple);">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <h4 data-i18n="diagram_page_distribution">Dossier Page Volume & Activity Curve</h4>
+              </div>
+              <span class="status-pill pill-ok" id="wave-chart-pages-tag">0 Total Pages</span>
+            </div>
+            <div class="dash-card-body">
+              <svg class="wave-chart-svg" id="wave-chart-svg" viewBox="0 0 500 130">
+                <defs>
+                  <linearGradient id="waveGradientTeal" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.35" />
+                    <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0.0" />
+                  </linearGradient>
+                  <linearGradient id="waveGradientPurple" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#c084fc" stop-opacity="0.35" />
+                    <stop offset="100%" stop-color="#c084fc" stop-opacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <!-- Filled Curves -->
+                <path id="wave-area-purple" d="M 0 120 Q 125 100, 250 110 T 500 120 L 500 130 L 0 130 Z" fill="url(#waveGradientPurple)" />
+                <path id="wave-area-teal" d="M 0 120 Q 125 90, 250 100 T 500 120 L 500 130 L 0 130 Z" fill="url(#waveGradientTeal)" />
+                <!-- Stroke Lines -->
+                <path id="wave-line-purple" d="M 0 120 Q 125 100, 250 110 T 500 120" fill="none" stroke="#c084fc" stroke-width="2.5" />
+                <path id="wave-line-teal" d="M 0 120 Q 125 90, 250 100 T 500 120" fill="none" stroke="#2dd4bf" stroke-width="2.5" />
+                <!-- Peak Highlight Dot -->
+                <circle id="wave-peak-dot" cx="250" cy="100" r="4.5" fill="#ffffff" stroke="#2dd4bf" stroke-width="3" />
+              </svg>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==========================================================================
+             MAIN WORKSPACE: Requirements Table & File Upload Repository
+             ========================================================================== -->
+        <section class="dashboard-grid-main">
+          
+          <!-- LEFT COLUMN: Tender Metadata & Requirements Checklist -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;" id="requirements-section">
+            
+            <!-- Tender Metadata Card -->
+            <div class="dash-card" id="tender-meta-panel">
+              <div class="dash-card-header">
+                <div class="dash-card-title-group">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                  <h4 data-i18n="tender_metadata_title">Tender Metadata</h4>
+                </div>
+                <button type="button" class="btn btn-card" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" onclick="loadDefaultSampleRequirements()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                  </svg>
+                  <span data-i18n="btn_reset_sample">Reset Sample</span>
+                </button>
+              </div>
+
+              <div class="dash-card-body">
+                <div class="meta-chips-grid">
+                  <div class="meta-chip-item">
+                    <span class="chip-label" data-i18n="meta_tender_id">Tender ID</span>
+                    <span class="chip-val mono" id="meta-tender-id">TEN-2026-BD-8941</span>
+                  </div>
+                  <div class="meta-chip-item">
+                    <span class="chip-label" data-i18n="meta_deadline">Submission Deadline</span>
+                    <span class="chip-val" id="meta-deadline" style="color: var(--accent-rose); font-weight: 800;">2026-10-15</span>
+                  </div>
+                  <div class="meta-chip-item full-span">
+                    <span class="chip-label" data-i18n="meta_title">Tender Title</span>
+                    <span class="chip-val" id="meta-title">Supply and Installation of Smart Office Equipment</span>
+                  </div>
+                  <div class="meta-chip-item">
+                    <span class="chip-label" data-i18n="meta_procuring_entity">Procuring Entity</span>
+                    <span class="chip-val" id="meta-procuring-entity">Department of Public Works, Dhaka</span>
+                  </div>
+                  <div class="meta-chip-item">
+                    <span class="chip-label" data-i18n="meta_bidder_name">Bidder Name</span>
+                    <span class="chip-val" id="meta-bidder-name">Apex Global Solutions Ltd.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Requirements Checklist Panel (Matching "Top Products" Table with Progress Bars) -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div class="dash-card-title-group">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-teal);">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                  <h4 data-i18n="requirements_checklist_title">Document Requirements & Matching</h4>
+                </div>
+                <span class="status-pill pill-ok" id="req-count-badge">6 Requirements</span>
+              </div>
+
+              <div class="dash-card-body">
+                <div id="requirements-container" class="requirements-table-wrapper">
+                  <!-- Dynamically populated requirement items -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: File Repository & Upload Dropzone -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;" id="repository-section">
+            
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div class="dash-card-title-group">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <h4 data-i18n="upload_panel_title">Upload & File Repository</h4>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" class="btn btn-card" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" onclick="smartAutoMatch()" id="btn-auto-match" title="Auto match uploaded files to requirements by title">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span data-i18n="btn_auto_match">Auto Match</span>
+                  </button>
+                  <button type="button" class="btn btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" onclick="clearAllFiles()" id="btn-clear-files" title="Remove all uploaded files">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    <span data-i18n="btn_clear_all">Clear</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="dash-card-body">
+                <!-- Dropzone -->
+                <div class="dropzone-canvas" id="pdf-dropzone" onclick="document.getElementById('pdf-file-input').click()">
+                  <input type="file" id="pdf-file-input" multiple accept=".pdf,application/pdf" style="display:none;" onchange="handleFileInputChange(this.files)">
+                  <div class="dropzone-icon-circle">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="12" y1="18" x2="12" y2="12"></line>
+                      <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+                    <h5 style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);" data-i18n="dropzone_title">Click or drag & drop PDF files here</h5>
+                    <p style="font-size: 0.8rem; color: var(--text-sub);" data-i18n="dropzone_subtitle">Select up to 30 PDF documents (Max total 50 MB)</p>
+                  </div>
+                </div>
+
+                <!-- Capacity Progress Bar -->
+                <div class="storage-capacity-bar">
+                  <div class="storage-labels-row">
+                    <span id="storage-count-label">0 / 30 Files</span>
+                    <span id="storage-size-label">0.0 MB / 50.0 MB</span>
+                  </div>
+                  <div class="capacity-track">
+                    <div class="capacity-fill" id="storage-progress-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Uploaded Files List -->
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h5 style="font-size: 0.88rem; font-weight: 800;" data-i18n="uploaded_files_heading">Uploaded Documents</h5>
+                  <span class="status-pill pill-not_provided" id="uploaded-files-count-badge">0 Files</span>
+                </div>
+
+                <div id="uploaded-files-list" class="files-scroll-list">
+                  <!-- Dynamically populated or empty state -->
+                  <div class="empty-placeholder" id="no-files-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <h4 data-i18n="empty_files_title">No PDF files uploaded yet</h4>
+                    <p data-i18n="empty_files_desc">Upload your tender documents to match against required checklist</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- App Footer Bar -->
+      <footer class="app-footer-bar">
+        <p>
+          <span data-i18n="footer_text">Tender Document Package Builder • AI Document Automation Platform • Strictly Client-Side Local Processing</span>
+        </p>
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL: Requirements JSON Loader / Editor -->
+  <div class="modal-overlay" id="modal-requirements">
+    <div class="modal-card-box">
+      <div class="modal-top">
+        <h3 data-i18n="modal_req_title">Load Tender Requirements</h3>
+        <button type="button" class="modal-close-x" onclick="closeRequirementsModal()">✕</button>
+      </div>
+      <div class="modal-middle">
+        <p data-i18n="modal_req_desc" style="font-size: 0.85rem; color: var(--text-sub);">
+          Upload a <code>requirements.json</code> file or paste JSON code containing tender metadata and required documents.
+        </p>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <input type="file" id="requirements-file-input" accept=".json,application/json" style="display:none;" onchange="handleModalJSONFile(this.files)">
+          <button type="button" class="btn btn-teal" onclick="document.getElementById('requirements-file-input').click()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span data-i18n="btn_choose_json_file">Upload & Apply JSON</span>
+          </button>
+          <button type="button" class="btn btn-card" onclick="downloadRequirementsJSON()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span data-i18n="btn_export_json">Export Template</span>
+          </button>
+        </div>
+
+        <div class="control-item">
+          <label data-i18n="label_paste_json">Or edit/paste requirements.json payload:</label>
+          <textarea id="requirements-json-textarea" rows="11" style="width: 100%; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-card); background: var(--bg-card-inner); color: var(--text-main); resize: vertical; outline: none;"></textarea>
+        </div>
+      </div>
+      <div class="modal-bottom">
+        <button type="button" class="btn btn-card" onclick="closeRequirementsModal()" data-i18n="btn_cancel">Cancel</button>
+        <button type="button" class="btn btn-teal" onclick="applyRequirementsJSON()" data-i18n="btn_apply_json">Apply Requirements</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PDF Preview -->
+  <div class="modal-overlay" id="modal-pdf-preview">
+    <div class="modal-card-box modal-lg">
+      <div class="modal-top">
+        <h3 id="pdf-preview-title">Document Preview</h3>
+        <button type="button" class="modal-close-x" onclick="closePdfPreviewModal()">✕</button>
+      </div>
+      <div class="modal-middle" style="align-items: center; justify-content: center;">
+        <div class="canvas-preview-wrapper" id="pdf-preview-container">
+          <canvas id="pdf-preview-canvas" class="canvas-preview"></canvas>
+          <div id="pdf-preview-loading" style="color: white; font-size: 0.9rem;" data-i18n="preview_loading">Rendering preview...</div>
+        </div>
+      </div>
+      <div class="modal-bottom">
+        <span id="pdf-preview-meta" style="font-size: 0.8rem; color: var(--text-sub); margin-right: auto;"></span>
+        <button type="button" class="btn btn-teal" onclick="closePdfPreviewModal()" data-i18n="btn_close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Compilation Progress & Download -->
+  <div class="modal-overlay" id="modal-compile-progress">
+    <div class="modal-card-box">
+      <div class="modal-top">
+        <h3 data-i18n="modal_compile_title">Package Generation</h3>
+      </div>
+      <div class="modal-middle">
+        <div id="compile-status-message" style="font-weight: 800; font-size: 0.95rem; color: var(--text-main);">
+          Initializing...
+        </div>
+
+        <div class="capacity-track" style="height: 10px; margin: 0.5rem 0 1rem;">
+          <div class="capacity-fill" id="compile-progress-bar" style="width: 15%; background: var(--accent-teal);"></div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div class="compile-step-row" id="cstep-1">
+            <span class="step-num-badge">1</span>
+            <span data-i18n="step_1_text">Initialize compliant package structure</span>
+          </div>
+          <div class="compile-step-row" id="cstep-2">
+            <span class="step-num-badge">2</span>
+            <span data-i18n="step_2_text">Generate official Cover Page in English with Shield Logo</span>
+          </div>
+          <div class="compile-step-row" id="cstep-3">
+            <span class="step-num-badge">3</span>
+            <span data-i18n="step_3_text">Merge required document pages in specified sequence</span>
+          </div>
+          <div class="compile-step-row" id="cstep-4">
+            <span class="step-num-badge">4</span>
+            <span data-i18n="step_4_text">Stamp uniform page footers (Page X of Y) across all sheets</span>
+          </div>
+          <div class="compile-step-row" id="cstep-5">
+            <span class="step-num-badge">5</span>
+            <span data-i18n="step_5_text">Finalize & trigger package download</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-bottom" id="compile-footer" style="display:none;">
+        <button type="button" class="btn btn-card" onclick="previewCompiledPackage()" id="btn-preview-compiled">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span data-i18n="btn_preview_compiled">Preview Generated PDF</span>
+        </button>
+        <button type="button" class="btn btn-teal" onclick="downloadCompiledPackage()" id="btn-download-compiled">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span data-i18n="btn_download_package">Download Package</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
